@@ -16,8 +16,12 @@ import uvicorn
 import matplotlib.pyplot as plt
 
 # ===============================
+# 프로젝트 기준 경로 설정
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# ===============================
 # 1 클래스 불러오기
-flatten_dir = "C:/Users/user/Downloads/한국 음식 이미지/kfood_flat"
+flatten_dir = os.path.join(BASE_DIR, "kfood_flat")
 dataset = datasets.ImageFolder(root=flatten_dir)
 classes = dataset.classes
 
@@ -28,10 +32,9 @@ model = resnet18(weights=None)
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, len(classes))
 model = model.to(device)
-model.load_state_dict(torch.load(
-    "C:/심화ai/food_classifier_resnet18_sampled.pth",
-    map_location=device
-))
+
+model_path = os.path.join(BASE_DIR, "food_classifier_resnet18_sampled.pth")
+model.load_state_dict(torch.load(model_path, map_location=device))
 model.eval()
 
 # ===============================
@@ -55,7 +58,8 @@ def predict_image(image_path):
 
 # ===============================
 # 5 CSV 불러오기
-df = pd.read_csv("C:/심화ai/GSdata/food_with_GI_GL_2.csv", encoding="cp949")
+csv_path = os.path.join(BASE_DIR, "food_with_GI_GL_2.csv")
+df = pd.read_csv(csv_path, encoding="cp949")
 
 def get_nutrition(food_name):
     row = df[df["음식명"] == food_name]
