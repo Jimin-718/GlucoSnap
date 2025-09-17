@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>음식 혈당 챗봇</title>
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+</head>
+<body>
+<div class="main-container">
+    <!-- 왼쪽 메뉴 -->
+    <div class="sidebar">
+        <h3>MENU</h3>
+        <ul>
+            <li><a href="home"><span>홈</span></a></li>
+        </ul>
+    </div>
+
+    <!-- 챗봇 영역 -->
+    <div class="chat-container">
+        <div class="logo-container">
+            <img src="/image/logo.png">
+        </div>
+
+        <!-- 채팅 대화창 -->
+        <div id="chat"></div>
+
+        <!-- 채팅 입력창 -->
+        <div class="input-group">
+            <input type="text" class="input" id="userInput" name="userInput" placeholder="메뉴(1~2)를 선택해주세요..." autocomplete="off">
+            <button class="button--submit" id="sendBtn">전송</button>
+        </div>
+
+        <!-- 사진 불러오기 버튼 (필요 시 유지) -->
+        <button id="photoBtn" style="display:none;">사진 불러오기</button>
+        <input type="file" id="imageInput" accept="image/*" style="display:none;">
+
+
+
+
+        <!-- 그림판 영역 -->
+        <div id="draw-container">
+            <h3>음식을 그려보세요!</h3>
+            <canvas id="drawCanvas" width="280" height="280"></canvas>
+            <div class="draw-buttons">
+                <button id="clearBtn">지우기</button>
+                <button id="submitDrawing">인식하기</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script th:src="@{/js/chat.js}"></script>
+</body>
+</html>

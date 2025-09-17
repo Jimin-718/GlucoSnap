@@ -1,0 +1,216 @@
+/* ================== Body / 전체 레이아웃 ================== */
+body {
+    font-family: 'Malgun Gothic', sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* ================== 로고 ================== */
+.logo-container {
+  text-align: center;
+}
+
+.logo-container img {
+  max-width: 230px; /* 로고 크기 */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* main-container: 사이드바 + 챗봇 가로 배치 */
+.main-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ================== 챗봇 영역 ================== */
+.chat-container {
+    flex: 1;  /* 남은 공간 차지 */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    margin: 20px auto;   /* 좌우 자동 정렬 */
+    max-width: 800px;    /* 최대 가로 크기 제한 */
+    width: 100%;         /* 화면이 작아지면 100%까지 줄어듦 */
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+#chat {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    height: 400px;
+    overflow-y: scroll;
+    background-color: #fafafa;
+    margin-bottom: 15px;
+}
+
+/* ================== 챗봇 말풍선 ================== */
+.message {
+    max-width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+    border-radius: 15px;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-size: 14px;
+}
+
+/* 사용자 메시지: 오른쪽 파랑 */
+.user {
+    background-color: #cce4ff;
+    color: #0366d6;
+    align-self: flex-end;
+    border-bottom-right-radius: 0;
+}
+
+/* 사용자 말풍선 꼬리 */
+.user::after {
+    content: "";
+    position: absolute;
+    right: -10px;
+    top: 10px;
+    border-width: 10px 0 10px 10px;
+    border-style: solid;
+    border-color: transparent transparent transparent #cce4ff;
+}
+
+/* 봇 메시지: 왼쪽 초록 */
+.bot {
+    background-color: #e6f7e6;
+    color: #2d7a2d;
+    align-self: flex-start;
+    border-bottom-left-radius: 0;
+}
+
+/* 봇 말풍선 꼬리 */
+.bot::after {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 10px;
+    border-width: 10px 10px 10px 0;
+    border-style: solid;
+    border-color: transparent #e6f7e6 transparent transparent;
+}
+
+/* ================== 입력창 ================== */
+.input-group {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 중앙 정렬 */
+  width: 100%;
+}
+
+/* 검색창 input */
+.input {
+  flex: 1;
+  max-width: 1200px; /* 중앙에서 너무 넓지 않게 */
+  min-height: 50px;
+  padding: 0 1rem;
+  color: #000000;
+  font-size: 15px;
+  border: 1px solid #5e4dcd;
+  border-radius: 6px 0 0 6px;
+  background-color: transparent;
+}
+
+/* 전송 버튼 */
+.button--submit {
+  min-height: 50px;
+  padding: .5em 1em;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  background-color: #5e4dcd;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color .3s ease-in-out;
+}
+
+.button--submit:hover {
+  background-color: #5e5dcd;
+}
+
+/* 사진 불러오기 버튼 */
+#photoBtn {
+  width: 500px;
+  min-height: 50px;
+  padding: 0 1em;
+  margin: 0 auto;
+  margin-top: 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #3898EC;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color .3s ease-in-out;
+}
+
+#photoBtn:hover {
+  background-color: #2c7bd6;
+}
+
+/* 파일 input은 숨김 */
+#imageInput {
+  display: none;
+}
+
+/* ================== 챗봇 이미지 ================== */
+#chat img {
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+/* ================== 그림판 ================== */
+#draw-container {
+    display: flex;             /* flex 박스 */
+    flex-direction: column;    /* 세로 배치 */
+    align-items: center;       /* 가로 가운데 정렬 */
+    justify-content: center;   /* 세로 가운데 정렬 (옵션) */
+    text-align: center;        /* 내부 텍스트도 가운데 */
+}
+#drawCanvas {
+    border: 2px solid #000;
+    background: white;
+    cursor: crosshair;
+    display: block;
+    margin: 0 auto;
+
+}
+
+/* 버튼 묶음 */
+.draw-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* 버튼 간격 */
+    margin-top: 10px;
+}
+
+/* 버튼 공통 스타일 */
+.draw-buttons button {
+    min-width: 80px;
+    min-height: 45px;
+    border: none;
+    border-radius: 8px;   /* 둥글게 */
+    background-color: #3898EC; /* 파란색 */
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* hover 효과 */
+.draw-buttons button:hover {
+    background-color: #2c7bd6; /* 진한 파랑 */
+}

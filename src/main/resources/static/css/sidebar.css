@@ -1,0 +1,76 @@
+/* --- 사이드바 전체 --- */
+.sidebar {
+    width: 60px; /* 기본 너비 */
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    transition: width 0.3s;
+    overflow: hidden;
+    position: relative;
+}
+
+.sidebar:hover {
+    width: 200px; /* 마우스 오버 시 확장 */
+}
+
+/* 제목 */
+.sidebar h3 {
+    margin: 0 0 20px 10px;
+    margin_top: 50px;
+    color: #0366d6;
+    font-size: 20px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    text_align: center;
+}
+
+.sidebar:hover h3 {
+    opacity: 1;
+}
+
+/* 메뉴 리스트 */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sidebar ul li a:hover {
+    background-color: #0366d6;
+    color: #fff;
+}
+
+/* 아이콘 */
+.sidebar ul li a::before {
+    margin-right: 10px;
+    display: inline-block;
+}
+
+/* 텍스트 숨기기 */
+.sidebar ul li a span {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* 사이드바 확장 시 텍스트 나타나기 */
+.sidebar:hover ul li a span {
+    opacity: 1;
+}
