@@ -21,9 +21,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ===============================
 # 1 클래스 불러오기
-flatten_dir = os.path.join(BASE_DIR, "kfood_flat")
-dataset = datasets.ImageFolder(root=flatten_dir)
-classes = dataset.classes
+flatten_dir = os.path.join(BASE_DIR, "kfood_flat_structure")
+classes = [d for d in os.listdir(flatten_dir) if os.path.isdir(os.path.join(flatten_dir, d))]
+classes.sort()
 
 # ===============================
 # 2 모델 불러오기

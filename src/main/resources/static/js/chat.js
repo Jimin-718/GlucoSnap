@@ -11,7 +11,7 @@ const ctx = canvas.getContext('2d');
 const clearBtn = document.getElementById('clearBtn');
 const submitDrawing = document.getElementById('submitDrawing');
 
-let mode = "menu"; // 현재 상태
+let mode = "menu";
 let drawing = false;
 
 // 메시지 추가 함수
@@ -25,8 +25,7 @@ function addMessage(msg, sender) {
 
 // 초기 로드
 window.onload = () => {
-    drawContainer.style.display = "none"; // 그림판 숨김
-
+    drawContainer.style.display = "none";
     addMessage(
         "안녕하세요 무엇을 도와드릴까요?<br>" +
         "1. 음식 사진을 업로드하면 혈당 변화를 알려드려요.<br>" +
@@ -41,7 +40,6 @@ userInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") handleSend();
 });
 
-// 메시지 전송 처리
 function handleSend() {
     const msg = userInput.value.trim();
     if (!msg) return;
@@ -50,24 +48,23 @@ function handleSend() {
     handleUserInput(msg);
 }
 
-// 유저 입력 처리
+// ================= 메뉴 선택 처리 =================
 function handleUserInput(msg) {
     if (mode === "menu") {
         if (msg === "1") {
-            addMessage("현재 본인의 혈당값을 입력 한 후, 사진을 업로드해주세요.", "bot");
+            fetch("/fastapi/start/1", { method: "POST" });
+            addMessage("사진인식 서버 실행됨. 현재 본인의 혈당값을 입력 한 후, 사진을 업로드해주세요.", "bot");
             userInput.placeholder = "혈당값을 입력하세요...";
             photoBtn.style.display = "inline-block";
             mode = "blood";
         } else if (msg === "2") {
-            addMessage("미니게임 시작! 음식을 그려보세요.", "bot");
+            fetch("/fastapi/start/2", { method: "POST" });
+            addMessage("그림판 서버 실행됨. 미니게임 시작! 음식을 그려보세요.", "bot");
             drawContainer.style.display = "block";
             mode = "game";
-
-            // 그림판 초기화
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 이벤트 한 번만 등록
             if (!canvas.dataset.initialized) {
                 canvas.addEventListener("mousedown", () => drawing = true);
                 canvas.addEventListener("mouseup", () => drawing = false);
@@ -87,17 +84,15 @@ function handleUserInput(msg) {
     }
 }
 
-// 사진 업로드 처리
+// ================= 사진 업로드 처리 =================
 photoBtn.addEventListener("click", () => imageInput.click());
 
 imageInput.addEventListener("change", async () => {
     if (!imageInput.files[0]) return;
 
-    // 사용자가 선택한 파일 미리보기 추가
     const file = imageInput.files[0];
     const imgURL = URL.createObjectURL(file);
     addMessage(`<b>업로드한 사진:</b><br><img src="${imgURL}" width="200">`, "user");
-
     addMessage("이미지 업로드 중...", "user");
 
     const formData = new FormData();
@@ -111,19 +106,19 @@ imageInput.addEventListener("change", async () => {
 
     try {
         const res = await fetch("http://localhost:8100/python/predict", { method: "POST", body: formData });
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (e) { data = { textResult: text }; }
 
         if (data.textResult)
             addMessage("<b>예측 결과:</b><br>" + data.textResult.replace(/\n/g, "<br>"), "bot");
 
-        if (data.curveImageBase64) {
+        if (data.curveImageBase64)
             addMessage(`<img src="data:image/png;base64,${data.curveImageBase64}" width="400">`, "bot");
-        }
     } catch (err) {
         addMessage("오류 발생: " + err, "bot");
     }
 });
-
 
 // ================= 그림판 로직 =================
 let lastX = 0, lastY = 0;
@@ -131,9 +126,9 @@ let lastX = 0, lastY = 0;
 function draw(e) {
     if (!drawing) return;
     ctx.strokeStyle = "black";
-    ctx.lineWidth = 8;           // 두꺼운 펜
-    ctx.lineCap = "round";        // 끝 부드럽게
-    ctx.lineJoin = "round";       // 연결 부드럽게
+    ctx.lineWidth = 8;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
 
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
@@ -144,11 +139,7 @@ function draw(e) {
     lastY = e.offsetY;
 }
 
-canvas.addEventListener("mousedown", (e) => {
-    drawing = true;
-    lastX = e.offsetX;
-    lastY = e.offsetY;
-});
+canvas.addEventListener("mousedown", (e) => { drawing = true; lastX = e.offsetX; lastY = e.offsetY; });
 canvas.addEventListener("mouseup", () => drawing = false);
 canvas.addEventListener("mouseout", () => drawing = false);
 canvas.addEventListener("mousemove", draw);
@@ -159,29 +150,26 @@ clearBtn.addEventListener("click", () => {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 });
 
-
-// 그림판 제출 & FastAPI 연동
+// ================= 그림판 제출 & FastAPI 연동 =================
 submitDrawing.addEventListener("click", async () => {
     canvas.toBlob((blob) => {
         const reader = new FileReader();
         reader.onload = async () => {
             const formData = new FormData();
             formData.append("image_base64", reader.result);
-            formData.append("current_glucose", userInput.value || 100); // 기본값 100
+            formData.append("current_glucose", userInput.value || 100);
 
             try {
-                const res = await fetch("http://localhost:8101/quickdraw/predict", {
-                    method: "POST",
-                    body: formData
-                });
-                const data = await res.json();
+                const res = await fetch("http://localhost:8101/quickdraw/predict", { method: "POST", body: formData });
+                const text = await res.text();
+                let data;
+                try { data = JSON.parse(text); } catch (e) { data = { textResult: text }; }
 
-                if (data.recognized_class) {
-                    addMessage(
-                        `✏그림 인식 결과: ${data.recognized_class}<br>` +
-                        `혈당 증가량: ${data.sugar_increase} mg/dL<br>`,
-                        "bot"
-                    );
+                if (data.recognized_class || data.textResult) {
+                    const msg = data.recognized_class
+                        ? `✏그림 인식 결과: ${data.recognized_class}<br>혈당 증가량: ${data.sugar_increase || "N/A"} mg/dL<br>`
+                        : `<b>서버 응답:</b><br>${data.textResult.replace(/\n/g, "<br>")}`;
+                    addMessage(msg, "bot");
                 } else if (data.error) {
                     addMessage("서버 오류: " + data.error, "bot");
                 } else {
